@@ -1,13 +1,14 @@
 'use strict';
+const config = require('../config'),
+    esController = require('./esController'),
+    TwitchBot = require('twitch-bot');
+
 exports.run = function () {
-    const config = require('../config'),
-        esController = require('./esController'),
-        TwitchBot = require('twitch-bot'),
-        Bot = new TwitchBot({
-            username: config.twitch_user.name,
-            oauth: config.twitch_user.oauth,
-            channel: config.twitch_channel.name
-        });
+    const Bot = new TwitchBot({
+        username: config.twitch_user.name,
+        oauth: config.twitch_user.oauth,
+        channel: config.twitch_channel.name
+    });
 
     Bot.on('join', () => {
         // Check ES cluster availability
