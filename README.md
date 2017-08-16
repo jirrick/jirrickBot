@@ -1,0 +1,2 @@
+# jirrickBot
+useless twitch chatBot
