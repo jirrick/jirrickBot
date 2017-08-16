@@ -61,3 +61,6 @@ package-lock.json
 
 # do not commit real config
 config.js
+
+# vscode launch config
+.vscode/launch.json
