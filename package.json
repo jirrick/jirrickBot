@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "dateformat": "^2.0.0",
+    "elasticsearch": "^13.3.1",
     "express": "^4.15.4",
     "twitch-bot": "^1.0.4"
   }

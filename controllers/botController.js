@@ -10,13 +10,16 @@ exports.run = function () {
         });
 
     Bot.on('join', () => {
-        // Store all messages in ES
-        Bot.on('message', chatter => {
-            esController.store(chatter);
-        });
+        // Check ES cluster availability
+        esController.ping();
+    });
+
+    Bot.on('message', chatter => {
+        // Log all messages to ES
+        esController.store(chatter);
     });
 
     Bot.on('error', err => {
-        console.log('ERROR: ' + err);
+        console.error(err);
     });
 };

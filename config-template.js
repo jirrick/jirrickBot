@@ -16,6 +16,14 @@ var config = {
     server: {
         host: '127.0.0.1',
         port: '3000'
+    },
+    
+    //elasticsearch details
+    elasticsearch: {
+        host: '127.0.0.1',
+        port: '9200',
+        user: 'elastic',
+        pass: 'changeme'
     }
 };
 module.exports = config;
