@@ -1,6 +1,7 @@
 'use strict';
 const config = require('../config'),
     esController = require('./EsController'),
+    parseController = require('./ParseController'),
     dateFormat = require('dateformat'),
     TwitchBot = require('twitch-bot');
 
@@ -20,6 +21,8 @@ exports.run = function () {
         const msg = new MessageDetails(chatter);
         // Log all messages to ES
         esController.store(msg);
+        // Parse message contents
+        parseController.parse(msg);
     });
 
     Bot.on('error', err => {
