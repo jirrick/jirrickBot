@@ -1,6 +1,5 @@
 'use strict';
 const config = require('../config'),
-    dateFormat = require('dateformat'),
     elasticsearch = require('elasticsearch'),
     esClient = new elasticsearch.Client({
         host: [
@@ -14,8 +13,7 @@ const config = require('../config'),
     });
 
 // Store message in ES    
-exports.store = function (chatter) {
-    const msg = new MessageDetails(chatter);
+exports.store = function (msg) {
     const body = {
         index: 'twitch_v3',
         type: 'public_chat',
@@ -47,10 +45,4 @@ exports.ping = function () {
     });
 };
 
-// Parse info from chatter object
-function MessageDetails(chatter) {
-    this.channel = chatter.channel.substring(1),
-    this.user = chatter.display_name,
-    this.message = chatter.message,
-    this.timestamp = dateFormat(new Date(chatter.tmi_sent_ts), 'UTC:yyyy-mm-dd HH:MM:ss.l');
-}
+
