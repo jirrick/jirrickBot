@@ -1,0 +1,25 @@
+{
+    "settings": {
+        "number_of_replicas": 1,
+        "number_of_shards": 3
+    },
+    "mappings": {
+        "public_chat": {
+            "properties": {
+                "channel": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "date",
+                    "format": "yyyy-MM-dd HH:mm:ss.SSS"
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
