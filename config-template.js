@@ -1,4 +1,8 @@
-var config = {
+// customize values and save as 'config.js'
+const config = {
+    //console logging
+    logToConsole: true,
+    
     //twitch account settings
     twitch_user: {
         name: 'user',

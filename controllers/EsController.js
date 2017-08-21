@@ -1,5 +1,6 @@
 'use strict';
 const config = require('../config'),
+    logging = config.logToConsole,
     elasticsearch = require('elasticsearch'),
     esClient = new elasticsearch.Client({
         host: [
@@ -17,17 +18,17 @@ exports.store = function (msg) {
     const body = {
         index: 'twitch_v3',
         type: 'public_chat',
-        body: msg         
+        body: msg
     };
 
     esClient.index(body, function (error, response) {
-        if (error){
+        if (error) {
             console.error(error);
-            console.log(response);
+            if (logging) console.log(response);
         }
     });
 
-    //console.log(`[${msg.timestamp}] ${msg.user} : ${msg.message}`);
+    if (logging) console.log(`[${msg.timestamp}] ${msg.user} : ${msg.message}`);
 };
 
 // Checks that ES is ready
@@ -39,7 +40,7 @@ exports.ping = function () {
             console.error('elasticsearch cluster is down!');
             return false;
         } else {
-            console.log('elasticsearch is ready');
+            if (logging) console.log('elasticsearch is ready');
             return true;
         }
     });
