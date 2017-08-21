@@ -27,7 +27,7 @@ function Spin(msg) { // !spin XXX
         let amount = parseInt(match[3].replace(',', ''));
         if (match[2] === 'lost') amount *= -1;
 
-        //TODO Process results
+        //TODO: Process results
         if (logging) console.log(`SPIN: ${nick} [${amount}]`);
         result = true;
     }
@@ -129,7 +129,7 @@ function HeistSuccess(msg) { // Results from heist ...
                     heistBets = heistBets.filter(h => h.user !== nick);
                 }
 
-                // TODO save WIN 
+                // TODO: save WIN 
                 if (logging) console.log(`HEIST-WON: ${nick} [${amount}]`);
             }
         });
@@ -150,7 +150,7 @@ function OnHeistFail(bets) {
         let nick = item.user,
             amount = parseInt(item.amount) * -1;
         
-        //TODO save fail
+        //TODO: save fail
         if (logging) console.log(`HEIST-FAIL: ${nick} [${amount}]`);
     });
 }
