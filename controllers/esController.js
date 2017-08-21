@@ -52,5 +52,5 @@ function MessageDetails(chatter) {
     this.channel = chatter.channel.substring(1),
     this.user = chatter.display_name,
     this.message = chatter.message,
-    this.timestamp = dateFormat(new Date(chatter.tmi_sent_ts), 'UTC:yyyy-mm-dd HH:MM:ss.l')
+    this.timestamp = dateFormat(new Date(chatter.tmi_sent_ts), 'UTC:yyyy-mm-dd HH:MM:ss.l');
 }
