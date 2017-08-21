@@ -13,11 +13,23 @@ const config = require('../config'),
         ]
     });
 
+// Store message in ES    
 exports.store = function (chatter) {
-    const details = parseChatter(chatter);
+    const msg = new MessageDetails(chatter);
+    const body = {
+        index: 'twitch_v3',
+        type: 'public_chat',
+        body: msg         
+    };
 
-    //TODO store to ES
-    console.log(`[${details.timestamp}] ${details.user} : ${details.message}`);
+    esClient.index(body, function (error, response) {
+        if (error){
+            console.error(error);
+            console.log(response);
+        }
+    });
+
+    //console.log(`[${msg.timestamp}] ${msg.user} : ${msg.message}`);
 };
 
 // Checks that ES is ready
@@ -36,12 +48,9 @@ exports.ping = function () {
 };
 
 // Parse info from chatter object
-function parseChatter(chatter) {
-    const result = {
-        'channel': chatter.channel.substring(1),
-        'user': chatter.display_name,
-        'message': chatter.message,
-        'timestamp': dateFormat(new Date(chatter.tmi_sent_ts), 'UTC:yyyy-mm-dd HH:MM:ss.l')
-    };
-    return result;
+function MessageDetails(chatter) {
+    this.channel = chatter.channel.substring(1),
+    this.user = chatter.display_name,
+    this.message = chatter.message,
+    this.timestamp = dateFormat(new Date(chatter.tmi_sent_ts), 'UTC:yyyy-mm-dd HH:MM:ss.l')
 }
