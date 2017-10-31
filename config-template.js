@@ -28,6 +28,9 @@ const config = {
         port: '9200',
         user: 'elastic',
         pass: 'changeme'
-    }
+    },
+
+    //mongodb connectionstring
+    mongodb: 'mongodb://'
 };
 module.exports = config;

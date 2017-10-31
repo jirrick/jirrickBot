@@ -20,6 +20,7 @@
     "dateformat": "^2.0.0",
     "elasticsearch": "^13.3.1",
     "express": "^4.15.4",
+    "mongoose": "^4.11.5",
     "twitch-bot": "^1.0.4"
   }
 }

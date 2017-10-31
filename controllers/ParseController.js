@@ -1,7 +1,9 @@
 'use strict';
 const config = require('../config'),
     logging = config.logToConsole,
-    botName = config.twitch_channel.bot;
+    botName = config.twitch_channel.bot,
+    mongoose = require('mongoose');
+    
 let //HEIST
     isHeist = false,
     heistBets = null,
@@ -9,6 +11,7 @@ let //HEIST
 
 
 exports.parse = function (msg) {
+    // parsing methods
     if (Spin(msg)) return;
     if (HeistAmount(msg)) return;
     if (HeistStart(msg)) return;
