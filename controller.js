@@ -32,6 +32,13 @@ exports.parse = function(req, res) {
 	red.incr([nick + ":spins"], function(err, reply) {
 	    if (err) console.log(err);
 	});
+
+	//store spinking
+	if (amount > 0){
+		red.zincrby(["!spinking", 1, nick], function (err, reply) {
+		if (err) console.log(err);
+		});
+	}
 	
 	//Send reply
 	result = "Spin nick:" + nick + " amount:" + amount;
@@ -46,17 +53,19 @@ exports.parse = function(req, res) {
     if (heistMatch != null) {
 	var amount = heistMatch[2];
 	var user = req.body.user.toLowerCase();
-	if (isHeist === true) {
-	    // add to heistBets only if username not exist
-	    if (heistBets.filter(h => h.user === user).length == 0){
-	        var bet = { "user" : user, "amount" : amount};
-		heistBets.push(bet);
-		result = "Bet added - " + user;
+	if (amount > 0 && amount <= 1000){ //process bets only between 1 and 1000
+	    if (isHeist === true) {
+		// add to heistBets only if username not exist
+		if (heistBets.filter(h => h.user === user).length == 0){
+		    var bet = { "user" : user, "amount" : amount};
+		    heistBets.push(bet);
+		    result = "Bet added - " + user;
+		}
+	    } else {
+		//write to lastHeist
+		lastHeist = { "user" : user, "amount" : amount};
+		result = "Bet logged - " + user;
 	    }
-	} else {
-	    //write to lastHeist
-	    lastHeist = { "user" : user, "amount" : amount};
-	    result = "Bet logged - " + user;
 	}
 	res.send(result);
 	return;
@@ -101,7 +110,7 @@ exports.parse = function(req, res) {
 	result = "Heist passed";
 	// split wins
 	var red = redis_db.get();    
-	var wins = resultsMatch[2].split(" - ");
+	var wins = resultsMatch[2].split(",");
 	wins.forEach(function(item) {
 	    //parse win
 	    var winReg = /([\w\d]+) \(([\d,]+)\)/ig;
@@ -176,6 +185,10 @@ exports.command = function(req, res) {
 	    getOceans(nick, res);
 	    return;
 	}
+	if (cmd == "!spinking") {
+		getSpinking(res);
+		return;
+	}
 	res.send("!! Unsupported command");
     });
     	    
@@ -228,7 +241,7 @@ function getLast(nick, res) {
 	    succ = (total_wins / total_spins) * 100;
 	}
 	
-	result += "] " + emotes.getRnd() + " Lifetime: "
+	result += "] " + emotes.getRnd() + " History: "
 	if (total_sum < 0) result += "-";
 	result += "$" + Math.abs(total_sum) + ", ";
 	result += total_spins + " spins, ";
@@ -288,7 +301,7 @@ function getOceans(nick, res) {
 	    avg = (total_bets / total_heists);
 	}
 	
-	result += "] " + emotes.getRnd() + " Lifetime: "
+	result += "] " + emotes.getRnd() + " History: "
 	if (total_sum < 0) result += "-";
 	result += "$" + Math.abs(total_sum) + ", ";
 	result += total_heists + " heists, $";
@@ -303,5 +316,43 @@ function getOceans(nick, res) {
     res.send(result);
     }); //end lrange
  
+};
+
+function getSpinking(res) {
+	var red = redis_db.get();
+
+	red.zrevrangebyscore(["!spinking", 100000, 0, "WITHSCORES", "LIMIT", 0, 5], function (err, reply) {
+		var result = '';
+		if (err) {
+			result = "!! Error accessing cache";
+			console.log(err);
+		} else {
+			if (reply.length > 0) {
+				
+				result = '!! Most successful spins: ';
+				let index = 0;
+				let position = 1;
+				let item = '';
+
+				for (index = 0; index < reply.length; ++index) {
+					if (item === '') {
+						item = '#' + (position++).toString() + ' ' + reply[index] + ' (';
+					}
+					else {
+						item += reply[index] + ') - ';
+						result += item;
+						item = '';
+					}
+				}
+				
+			} else {
+				result = "!! ERROR";
+			}
+		} // end if err
+		//console.log(result);
+		result = result.substring(0, result.length - 2);
+		res.send(result);
+	}); //end zrevrange
+
 };
 
